@@ -4,10 +4,15 @@ import time
 from collections import Counter
 
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
-from plotly.subplots import make_subplots
+
+PLOTLY_IMPORT_ERROR = None
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+except ImportError as exc:
+    PLOTLY_IMPORT_ERROR = exc
 
 RNG_SEED = 42
 
@@ -628,6 +633,11 @@ def strategy_label_to_mode(label):
 # -----------------
 def main():
     st.set_page_config(page_title="Precision Oncology AI", layout="wide", page_icon="🧬")
+    if PLOTLY_IMPORT_ERROR is not None:
+        st.error(
+            "Missing dependency: plotly. Install required packages with `pip install -r requirements.txt` and restart the app."
+        )
+        st.stop()
     st.markdown(
         """
         <style>
